@@ -1,0 +1,21 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct data
+{
+    float a;
+    float b;
+    float c;
+};
+
+StructuredBuffer<data> inputDatas;
+
+RWStructuredBuffer<data> outputDatas;
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    outputDatas[id.x].a = inputDatas[id.x].a + 2;
+    outputDatas[id.x].b = inputDatas[id.x].b + 2;
+    outputDatas[id.x].c = inputDatas[id.x].c + 2;
+}
