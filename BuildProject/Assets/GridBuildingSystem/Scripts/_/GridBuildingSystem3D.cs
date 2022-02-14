@@ -67,6 +67,30 @@ public class GridBuildingSystem3D : MonoBehaviour {
     }
 
     private void Update() {
+        
+        // 当点击的地板有建筑时，应该抬起重放
+        if (Input.GetMouseButtonDown(0) && placedObjectTypeSO == null)
+        {
+            Vector3 mousePosition = Mouse3D.GetMouseWorldPosition();
+            if (grid.GetGridObject(mousePosition) != null) {
+                // Valid Grid Position
+                PlacedObject_Done placedObject = grid.GetGridObject(mousePosition).GetPlacedObject();
+                if (placedObject != null) {
+                    // Demolish
+                    placedObject.DestroySelf();
+
+                    List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+                    foreach (Vector2Int gridPosition in gridPositionList) {
+                        grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+                    }
+
+                    placedObjectTypeSO = placedObject.PlacedObjectTypeSO;
+                    RefreshSelectedObjectType();
+                    return;
+                }
+            }
+        }
+        
         if (Input.GetMouseButtonDown(0) && placedObjectTypeSO != null) {
             Vector3 mousePosition = Mouse3D.GetMouseWorldPosition();
             grid.GetXZ(mousePosition, out int x, out int z);
